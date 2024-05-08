@@ -1,16 +1,35 @@
-# This is a sample Python script.
+import pygame
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+# set up pygame modules
+pygame.init()
+pygame.font.init()
+my_font = pygame.font.SysFont('Arial', 15)
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+# set up variables for the display
+SCREEN_WIDTH = 900
+SCREEN_HEIGHT = 700
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Stranded")
+bg_daylight = pygame.image.load("background.daylight.jpg")
+#bg_afternoon = pygame.image.load("background.afternoon.jpg")
+#bg_night = pygame.image.load("background.night.jpg")
+
+# background
+def draw_background_daylight():
+    daylight_bg_print = pygame.transform.scale(bg_daylight, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen.blit(daylight_bg_print, (0, 0))
+
+
+run = True
+# -------- Main Program Loop -----------
+while run:
+
+    # draw background
+    draw_background_daylight()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+    pygame.display.update()
