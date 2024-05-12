@@ -1,4 +1,5 @@
 import pygame
+from character import Character
 
 # set up pygame modules
 pygame.init()
@@ -21,6 +22,9 @@ def draw_background_daylight():
     daylight_bg_print = pygame.transform.scale(bg_daylight, (SCREEN_WIDTH, SCREEN_HEIGHT))
     screen.blit(daylight_bg_print, (0, 0))
 
+# characters
+c = Character(80, 60)
+
 
 run = True
 # -------- Main Program Loop -----------
@@ -29,7 +33,27 @@ while run:
     # draw background
     draw_background_daylight()
 
+    # movement
+    keys = pygame.key.get_pressed()  # checking pressed keys
+    pygame.key.get_pressed()
+    if keys[pygame.K_d]:
+        c.move_direction("right")
+    if keys[pygame.K_a]:
+        c.move_direction("left")
+    if keys[pygame.K_w]:
+        c.move_direction("up")
+    if keys[pygame.K_s]:
+        c.move_direction("down")
+
+    if keys[pygame.K_LSHIFT]:
+        c.delta = .2
+    else:
+        c.delta =.1
+
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+
+    screen.blit(c.image, c.rect)
     pygame.display.update()
