@@ -3,6 +3,7 @@ import time
 import random
 from character import Character
 from medkit import Medkit
+import math
 
 # set up pygame modules
 pygame.init()
@@ -54,9 +55,15 @@ can_sprint = True
 
 #for i in range(6):
 med = Medkit(0, 0)
-random_x = random.randint(0, 900)
-random_y = random.randint(0, 700)
-spawn_kit = med(random_x, random_y)
+list_of_medkits = []
+#spawn_kit = Medkit(random_x, random_y)
+
+for i in range(6):
+    random_x = random.randint(0, 900)
+    random_y = random.randint(0, 700)
+    print(random_x)
+    spawn_kit = Medkit(random_x, random_y)
+    list_of_medkits.append(spawn_kit)
 
 
 
@@ -64,9 +71,6 @@ spawn_kit = med(random_x, random_y)
 run = True
 # -------- Main Program Loop -----------
 while run:
-
-    keys = pygame.key.get_pressed()             # the keys getting pressed
-    pygame.key.get_pressed()
 
     my_font = pygame.font.SysFont('Sarpanch', 90) # font and size
 
@@ -79,23 +83,31 @@ while run:
     if c_stamina <= 0:
         can_sprint = False
     if sprint == False and c_stamina < 100:
-        c_stamina = c_stamina + .5
+        c_stamina = c_stamina + .05
+        math.trunc(c_stamina)
         display_stamina = my_font.render(str(c_stamina), True, (255, 25, 255))
     if sprint:
-        c_stamina = c_stamina - 2
+        c_stamina = c_stamina - .1
+        math.trunc(c_stamina)
         display_stamina = my_font.render(str(c_stamina), True, (255, 25, 255))
+
+
+    keys = pygame.key.get_pressed()             # the keys getting pressed
+    pygame.key.get_pressed()
 
     # item collecting
     if c.rect.colliderect(med.rect):
         can_collect = True
+        my_font = pygame.font.SysFont('Sarpanch', 35)
         display_collect_msg = my_font.render((" 'E' to collect "), True, (255, 255, 255))
     else:
         can_collect = False
 
-    if can_collect == True and keys[pygame.K_e]:        # collecting item
 
+  #  if can_collect == True and keys[pygame.K_e]:        # collecting item
 
-
+    keys = pygame.key.get_pressed()  # the keys getting pressed
+    pygame.key.get_pressed()
 
     # movement
     if keys[pygame.K_d]:
@@ -120,12 +132,13 @@ while run:
 
 # display everything
     screen.blit(c.image, c.rect)
+    for i
     screen.blit(med.image, med.rect)
     screen.blit(display_health, (40, 600))
     screen.blit(display_stamina, (170, 600))
 
 # collecting
     if can_collect:
-        my_font = pygame.font.SysFont('Sarpanch', 35)
-        screen.blit(display_collect_msg, (200, 600))
+        my_font = pygame.font.SysFont('Sarpanch', 20)
+        screen.blit(display_collect_msg, (400, 600))
     pygame.display.update()
