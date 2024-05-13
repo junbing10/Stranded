@@ -6,6 +6,9 @@ class Character:
    def __init__(self, x, y):
        self.x = x
        self.y = y
+       self.health = 100
+       self.stamina = 100
+       self.inventory = []
        self.image = pygame.image.load("character.png")
        self.image_size = self.image.get_size()
        self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
@@ -24,3 +27,5 @@ class Character:
        if direction == "up":
            self.y = self.y - self.delta
        self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
+
+
