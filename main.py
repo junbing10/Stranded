@@ -17,7 +17,7 @@ SCREEN_HEIGHT = 700
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Stranded")
-bg_daylight = pygame.image.load("background.daylight.jpg")
+bg_daylight = pygame.image.load("../../AppData/Local/Temp/background.daylight.jpg")
 #bg_afternoon = pygame.image.load("background.afternoon.jpg")
 #bg_night = pygame.image.load("background.night.jpg")
 
@@ -33,8 +33,9 @@ def draw_background_daylight():
 c = Character(80, 60)
 
 # inventory and collecting
+inventory = []
 def collect_item(item):
-     c.inventory.append(item)
+    inventory.append(item)
 
 
 # stamina
@@ -54,16 +55,16 @@ can_sprint = True
 # medkits
 
 #for i in range(6):
-med = Medkit(0, 0)
-list_of_medkits = []
+med = Medkit(1000, 1000)
+list_of_objects = []
 #spawn_kit = Medkit(random_x, random_y)
 
 for i in range(6):
     random_x = random.randint(0, 900)
     random_y = random.randint(0, 700)
-    print(random_x)
     spawn_kit = Medkit(random_x, random_y)
-    list_of_medkits.append(spawn_kit)
+    list_of_objects.append(spawn_kit)
+    print(list_of_objects)
 
 
 
@@ -96,15 +97,22 @@ while run:
     pygame.key.get_pressed()
 
     # item collecting
-    if c.rect.colliderect(med.rect):
-        can_collect = True
-        my_font = pygame.font.SysFont('Sarpanch', 35)
-        display_collect_msg = my_font.render((" 'E' to collect "), True, (255, 255, 255))
-    else:
-        can_collect = False
+    for i in list_of_objects:
+        if c.rect.colliderect(i.rect):
+            can_collect = True
+            my_font = pygame.font.SysFont('Sarpanch', 35)
+            display_collect_msg = my_font.render((" 'E' to collect "), True, (255, 0, 0))
+        else:
+            can_collect = False
 
 
-  #  if can_collect == True and keys[pygame.K_e]:        # collecting item
+        if can_collect == True and keys[pygame.K_e]:        # collecting item
+            collect_item(i)
+            list_of_objects.remove(i)
+            print(inventory)
+
+        # med kit heal
+
 
     keys = pygame.key.get_pressed()  # the keys getting pressed
     pygame.key.get_pressed()
@@ -124,7 +132,7 @@ while run:
         c.delta = .2
     else:
         sprint = False
-        c.delta = .1
+        c.delta = 1
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -132,8 +140,9 @@ while run:
 
 # display everything
     screen.blit(c.image, c.rect)
-    for i
     screen.blit(med.image, med.rect)
+    for i in list_of_objects:
+        screen.blit(i.image, i.rect)
     screen.blit(display_health, (40, 600))
     screen.blit(display_stamina, (170, 600))
 
