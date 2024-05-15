@@ -17,23 +17,31 @@ SCREEN_HEIGHT = 700
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Stranded")
-bg_daylight = pygame.image.load("../../AppData/Local/Temp/background.daylight.jpg")
+bg_daylight = pygame.image.load("background.daylight.jpg")
+inventory_slot = pygame.image.load("inventory.png")
 #bg_afternoon = pygame.image.load("background.afternoon.jpg")
 #bg_night = pygame.image.load("background.night.jpg")
 
 # varaibles
 can_collect = False
+inventory_full = False
 
 # background
 def draw_background_daylight():
     daylight_bg_print = pygame.transform.scale(bg_daylight, (SCREEN_WIDTH, SCREEN_HEIGHT))
     screen.blit(daylight_bg_print, (0, 0))
 
+def draw_inventory():
+    inventory_slot_print = pygame.transform.scale(inventory_slot, (200, 200))
+    screen.blit(inventory_slot_print, (350, 5))
+
 # characters and items
 c = Character(80, 60)
 
 # inventory and collecting
 inventory = []
+display_collect_msg = my_font.render((" 'E' to collect "), True, (255, 0, 0))
+display_inv_full = my_font.render((" Inventory full "), True, (255, 0, 0))
 def collect_item(item):
     inventory.append(item)
 
@@ -77,6 +85,7 @@ while run:
 
     # draw background
     draw_background_daylight()
+    draw_inventory()
 
     # stamina change
     if c_stamina > 0:
@@ -107,9 +116,13 @@ while run:
 
 
         if can_collect == True and keys[pygame.K_e]:        # collecting item
-            collect_item(i)
-            list_of_objects.remove(i)
-            print(inventory)
+            if len(inventory) == 4:
+                inventory_full = True
+                print("inventory full")
+            else:
+                collect_item(i)
+                list_of_objects.remove(i)
+                print(inventory)
 
         # med kit heal
 
@@ -146,8 +159,13 @@ while run:
     screen.blit(display_health, (40, 600))
     screen.blit(display_stamina, (170, 600))
 
+
 # collecting
     if can_collect:
-        my_font = pygame.font.SysFont('Sarpanch', 20)
-        screen.blit(display_collect_msg, (400, 600))
+        if inventory_full:
+           screen.blit(display_inv_full, (400, 600))
+        else:
+            my_font = pygame.font.SysFont('Sarpanch', 20)
+            screen.blit(display_collect_msg, (400, 600))
+
     pygame.display.update()
