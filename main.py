@@ -4,6 +4,7 @@ import random
 from character import Character
 from medkit import Medkit
 import math
+from Background import Background
 
 # set up pygame modules
 pygame.init()
@@ -19,6 +20,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Stranded")
 bg_daylight = pygame.image.load("background.daylight.jpg")
 inventory_slot = pygame.image.load("inventory.png")
+#character_print = pygame.image.load("character.png")
 #bg_afternoon = pygame.image.load("background.afternoon.jpg")
 #bg_night = pygame.image.load("background.night.jpg")
 
@@ -27,6 +29,10 @@ can_collect = False
 inventory_full = False
 
 # background
+
+#def draw_character():
+#    character_display = pygame.transform.scale(character_print, (40, 80))
+#    screen.blit(character_display, (400, 320))
 def draw_background_daylight():
     daylight_bg_print = pygame.transform.scale(bg_daylight, (SCREEN_WIDTH, SCREEN_HEIGHT))
     screen.blit(daylight_bg_print, (0, 0))
@@ -35,8 +41,12 @@ def draw_inventory():
     inventory_slot_print = pygame.transform.scale(inventory_slot, (200, 200))
     screen.blit(inventory_slot_print, (350, 5))
 
+#def draw_item_in_slots():
+
+
 # characters and items
-c = Character(80, 60)
+c = Character(443, 353)
+bg = Background(-500, -450)
 
 # inventory and collecting
 inventory = []
@@ -62,10 +72,10 @@ can_sprint = True
 
 # medkits
 
-#for i in range(6):
+
 med = Medkit(1000, 1000)
 list_of_objects = []
-#spawn_kit = Medkit(random_x, random_y)
+
 
 for i in range(6):
     random_x = random.randint(0, 900)
@@ -80,12 +90,19 @@ for i in range(6):
 run = True
 # -------- Main Program Loop -----------
 while run:
+    screen.blit(bg.image, bg.rect)
+
+    x = pygame.mouse.get_pos()
+    display_coord = my_font.render(str(x), True, (255, 255, 255))
+    print(x)
+
 
     my_font = pygame.font.SysFont('Sarpanch', 90) # font and size
 
     # draw background
-    draw_background_daylight()
+   # draw_background_daylight()
     draw_inventory()
+#    draw_character()
 
     # stamina change
     if c_stamina > 0:
@@ -108,6 +125,7 @@ while run:
     # item collecting
     for i in list_of_objects:
         if c.rect.colliderect(i.rect):
+            print("e")
             can_collect = True
             my_font = pygame.font.SysFont('Sarpanch', 35)
             display_collect_msg = my_font.render((" 'E' to collect "), True, (255, 0, 0))
@@ -124,6 +142,23 @@ while run:
                 list_of_objects.remove(i)
                 print(inventory)
 
+ #               for i in range(5):
+#                    amount_of_items = i
+##                    if len(inventory) == i:
+  #                      screen.blit()
+
+                if len(inventory) == 0:
+                    inventory_slot_numbers = 0
+                if len(inventory) == 1:
+                    inventory_slot_numbers = 1
+                if len(inventory) == 2:
+                    inventory_slot_numbers = 2
+                if len(inventory) == 3:
+                    inventory_slot_numbers = 3
+                if len(inventory) == 4:
+                    inventory_slot_numbers = 4
+
+
         # med kit heal
 
 
@@ -132,20 +167,24 @@ while run:
 
     # movement
     if keys[pygame.K_d]:
-        c.move_direction("right")
+        bg.move_direction("right")
+        med.move_direction("right")
     if keys[pygame.K_a]:
-        c.move_direction("left")
+        bg.move_direction("left")
+        med.move_direction("left")
     if keys[pygame.K_w]:
-        c.move_direction("up")
+        bg.move_direction("up")
+        med.move_direction("up")
     if keys[pygame.K_s]:
-        c.move_direction("down")
+        bg.move_direction("down")
+        med.move_direction("down")
 
     if keys[pygame.K_LSHIFT] and can_sprint:
         sprint = True
-        c.delta = .2
+        bg.delta = .2
     else:
         sprint = False
-        c.delta = 1
+        bg.delta = 1
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -153,6 +192,7 @@ while run:
 
 # display everything
     screen.blit(c.image, c.rect)
+
     screen.blit(med.image, med.rect)
     for i in list_of_objects:
         screen.blit(i.image, i.rect)
@@ -167,5 +207,9 @@ while run:
         else:
             my_font = pygame.font.SysFont('Sarpanch', 20)
             screen.blit(display_collect_msg, (400, 600))
+    my_font = pygame.font.SysFont('Sarpanch', 20)
+ #   screen.blit(display_coord, x)
+
 
     pygame.display.update()
+
