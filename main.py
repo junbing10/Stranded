@@ -73,13 +73,13 @@ can_sprint = True
 # medkits
 
 
-med = Medkit(1000, 1000)
+med = Medkit(400, 400)
 list_of_objects = []
 
 
 for i in range(6):
-    random_x = random.randint(0, 900)
-    random_y = random.randint(0, 700)
+    random_x = random.randint(5, 1500)
+    random_y = random.randint(250, 1150)
     spawn_kit = Medkit(random_x, random_y)
     list_of_objects.append(spawn_kit)
     print(list_of_objects)
@@ -169,22 +169,36 @@ while run:
     if keys[pygame.K_d]:
         bg.move_direction("right")
         med.move_direction("right")
+        for i in list_of_objects:
+            i.move_direction("right")
     if keys[pygame.K_a]:
         bg.move_direction("left")
         med.move_direction("left")
+        for i in list_of_objects:
+            i.move_direction("left")
     if keys[pygame.K_w]:
         bg.move_direction("up")
         med.move_direction("up")
+        for i in list_of_objects:
+            i.move_direction("up")
     if keys[pygame.K_s]:
         bg.move_direction("down")
         med.move_direction("down")
+        for i in list_of_objects:
+            i.move_direction("down")
 
     if keys[pygame.K_LSHIFT] and can_sprint:
         sprint = True
-        bg.delta = .2
+        bg.delta = 2
+        med.delta = 2
+        for i in list_of_objects:
+            i.delta = 2
     else:
         sprint = False
         bg.delta = 1
+        med.delta = 1
+        for i in list_of_objects:
+            i.delta = 1
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -192,6 +206,7 @@ while run:
 
 # display everything
     screen.blit(c.image, c.rect)
+    screen.blit(med.image, med.rect)
 
     screen.blit(med.image, med.rect)
     for i in list_of_objects:
@@ -202,6 +217,7 @@ while run:
 
 # collecting
     if can_collect:
+        print("t")
         if inventory_full:
            screen.blit(display_inv_full, (400, 600))
         else:

@@ -8,19 +8,19 @@ class Background:
         self.image = pygame.image.load("background.daylight.jpg")
         self.image_size = self.image.get_size()
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
-        self.delta = 2
+        self.delta = 1
 
     def move_direction(self, direction):
-        if direction == "right":
+        if direction == "left":
             self.x = self.x + self.delta
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
-        if direction == "left":
+        if direction == "right":
             self.x = self.x - self.delta
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
-        if direction == "down":
+        if direction == "up":
             self.y = self.y + self.delta
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
-        if direction == "up":
+        if direction == "down":
             self.y = self.y - self.delta
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
 
