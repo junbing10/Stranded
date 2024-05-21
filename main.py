@@ -41,6 +41,11 @@ def draw_inventory():
     inventory_slot_print = pygame.transform.scale(inventory_slot, (200, 200))
     screen.blit(inventory_slot_print, (350, 5))
 
+def draw_item_on_slot(item, x, y):
+    slot1 = pygame.transform.scale(item, item.image_size)
+    screen.blit(slot1, x, y)
+
+
 #def draw_item_in_slots():
 
 
@@ -140,6 +145,7 @@ while run:
             else:
                 collect_item(i)
                 list_of_objects.remove(i)
+                draw_item_on_slot(i, 468, 80)
                 print(inventory)
 
  #               for i in range(5):
