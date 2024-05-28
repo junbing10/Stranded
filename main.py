@@ -19,6 +19,8 @@ SCREEN_HEIGHT = 700
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Stranded")
 bg_daylight = pygame.image.load("background.daylight.jpg")
+bg_midday = pygame.image.load("background_midday.jpg")
+bg_night = pygame.image.load("background_night.jpg")
 inventory_slot = pygame.image.load("inventory.png")
 #character_print = pygame.image.load("character.png")
 #bg_afternoon = pygame.image.load("background.afternoon.jpg")
@@ -34,8 +36,17 @@ inventory_full = False
 #    character_display = pygame.transform.scale(character_print, (40, 80))
 #    screen.blit(character_display, (400, 320))
 def draw_background_daylight():
-    daylight_bg_print = pygame.transform.scale(bg_daylight, (SCREEN_WIDTH, SCREEN_HEIGHT))
-    screen.blit(daylight_bg_print, (0, 0))
+    bg_print = pygame.transform.scale(bg_daylight, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen.blit(bg_print, (0, 0))
+
+def draw_background_midday():
+    bg_print = pygame.transform.scale(bg_midday, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen.blit(bg_print, (0, 0))
+
+def draw_background_night():
+    bg_print = pygame.transform.scale(bg_night, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen.blit(bg_print, (0, 0))
+
 
 def draw_inventory():
     inventory_slot_print = pygame.transform.scale(inventory_slot, (200, 200))
@@ -101,6 +112,17 @@ while run:
     display_coord = my_font.render(str(x), True, (255, 255, 255))
     print(x)
 
+    #time count and background switch
+    current_time = 0
+    start_time = time.time()
+
+    current_time = time.time()
+    current_time += int(start_time)
+    current_time = round(current_time, 2)
+    subtracted_time = current_time
+    subtracted_time = round(subtracted_time, 2)
+    total_time = "Time elapsed: " + str(subtracted_time) + "s"
+    print(total_time)
 
     my_font = pygame.font.SysFont('Sarpanch', 90) # font and size
 
