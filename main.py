@@ -29,6 +29,8 @@ inventory_slot = pygame.image.load("inventory.png")
 # varaibles
 can_collect = False
 inventory_full = False
+start_time = time.time()
+
 
 # background
 
@@ -100,36 +102,39 @@ for i in range(6):
     list_of_objects.append(spawn_kit)
     print(list_of_objects)
 
-
+def blit_bg(x, y):
+    screen.blit(x, y)
 
 
 run = True
 # -------- Main Program Loop -----------
 while run:
-    screen.blit(bg.image, bg.rect)
+    blit_bg(bg.image, bg.rect)
 
     x = pygame.mouse.get_pos()
     display_coord = my_font.render(str(x), True, (255, 255, 255))
     print(x)
 
     #time count and background switch
-    current_time = 0
-    start_time = time.time()
-
     current_time = time.time()
-    current_time += int(start_time)
-    current_time = round(current_time, 2)
-    subtracted_time = current_time
-    subtracted_time = round(subtracted_time, 2)
-    total_time = "Time elapsed: " + str(subtracted_time) + "s"
+    current_time -= int(start_time)
+    current_time = 30
+    #current_time = round(current_time, 0)
+    total_time = "Time elapsed: " + str(current_time) + "s"
+    time_display = my_font.render(total_time, True, (255, 255, 255))
+
     print(total_time)
+
+    #background switch
+    if current_time == 30:
+        draw_background_midday()
+
 
     my_font = pygame.font.SysFont('Sarpanch', 90) # font and size
 
-    # draw background
-   # draw_background_daylight()
+
     draw_inventory()
-#    draw_character()
+
 
     # stamina change
     if c_stamina > 0:
