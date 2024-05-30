@@ -37,26 +37,14 @@ start_time = time.time()
 #def draw_character():
 #    character_display = pygame.transform.scale(character_print, (40, 80))
 #    screen.blit(character_display, (400, 320))
-def draw_background_daylight():
-    bg_print = pygame.transform.scale(bg_daylight, (SCREEN_WIDTH, SCREEN_HEIGHT))
-    screen.blit(bg_print, (0, 0))
-
-def draw_background_midday():
-    bg_print = pygame.transform.scale(bg_midday, (SCREEN_WIDTH, SCREEN_HEIGHT))
-    screen.blit(bg_print, (0, 0))
-
-def draw_background_night():
-    bg_print = pygame.transform.scale(bg_night, (SCREEN_WIDTH, SCREEN_HEIGHT))
-    screen.blit(bg_print, (0, 0))
-
 
 def draw_inventory():
     inventory_slot_print = pygame.transform.scale(inventory_slot, (200, 200))
     screen.blit(inventory_slot_print, (350, 5))
 
-def draw_item_on_slot(item, x, y):
-    slot1 = pygame.transform.scale(item, item.image_size)
-    screen.blit(slot1, x, y)
+#def draw_item_on_slot(item, x, y):
+#    slot1 = pygame.transform.scale(item, item.image_size)
+#    screen.blit(slot1, x, y)
 
 
 #def draw_item_in_slots():
@@ -65,6 +53,8 @@ def draw_item_on_slot(item, x, y):
 # characters and items
 c = Character(443, 353)
 bg = Background(-500, -450)
+
+switch_midday = False
 
 # inventory and collecting
 inventory = []
@@ -102,32 +92,34 @@ for i in range(6):
     list_of_objects.append(spawn_kit)
     print(list_of_objects)
 
-def blit_bg(x, y):
-    screen.blit(x, y)
+
 
 
 run = True
 # -------- Main Program Loop -----------
 while run:
-    blit_bg(bg.image, bg.rect)
+    screen.blit(bg.image, bg.rect)
 
     x = pygame.mouse.get_pos()
     display_coord = my_font.render(str(x), True, (255, 255, 255))
-    print(x)
+    #print(x)
 
     #time count and background switch
     current_time = time.time()
     current_time -= int(start_time)
-    current_time = 30
-    #current_time = round(current_time, 0)
+    current_time = round(current_time, 0)
     total_time = "Time elapsed: " + str(current_time) + "s"
     time_display = my_font.render(total_time, True, (255, 255, 255))
 
-    print(total_time)
+    #print(total_time)
 
     #background switch
-    if current_time == 30:
-        draw_background_midday()
+
+    if current_time == 25.0:
+        bg.image = pygame.image.load("background_midday.jpg")
+
+    if current_time == 45.0:
+        bg.image = pygame.image.load("background_night.jpg")
 
 
     my_font = pygame.font.SysFont('Sarpanch', 90) # font and size
@@ -172,7 +164,7 @@ while run:
             else:
                 collect_item(i)
                 list_of_objects.remove(i)
-                draw_item_on_slot(i, 468, 80)
+         #       draw_item_on_slot(i, 468, 80)
                 print(inventory)
 
  #               for i in range(5):
