@@ -5,6 +5,7 @@ from character import Character
 from medkit import Medkit
 import math
 from Background import Background
+from Boss1 import Wizard
 
 # set up pygame modules
 pygame.init()
@@ -30,6 +31,8 @@ inventory_slot = pygame.image.load("inventory.png")
 can_collect = False
 inventory_full = False
 start_time = time.time()
+spawn_boss = False
+display_boss_msg = True
 
 
 # background
@@ -53,6 +56,10 @@ def draw_inventory():
 # characters and items
 c = Character(443, 353)
 bg = Background(-500, -450)
+
+#bosses
+list_of_bosses = ["Wizard"]
+
 
 switch_midday = False
 
@@ -102,7 +109,7 @@ while run:
 
     x = pygame.mouse.get_pos()
     display_coord = my_font.render(str(x), True, (255, 255, 255))
-    #print(x)
+    print(x)
 
     #time count and background switch
     current_time = time.time()
@@ -118,8 +125,33 @@ while run:
     if current_time == 25.0:
         bg.image = pygame.image.load("background_midday.jpg")
 
-    if current_time == 45.0:
+
+    if current_time == 45.0:            # 45
         bg.image = pygame.image.load("background_night.jpg")
+
+    # boss
+    if current_time == 2.0: #60
+        spawn_boss = True
+        display_boss_msg = True
+
+    if spawn_boss:
+        if display_boss_msg:
+            boss_display_message = my_font.render("What is that?", True, (255, 255, 255))
+            my_font = pygame.font.SysFont('Sarpanch', 70)
+            screen.blit(boss_display_message, (521, 368))
+            if current_time == 4.0:
+                display_boss_msg = False
+
+        random_index = 0
+
+        if list_of_bosses[random_index] == "Wizard":
+            boss = list_of_bosses[random_index]
+            wizard = Wizard(470, 380)
+            screen.blit(wizard.image, wizard.rect)
+
+
+
+
 
 
     my_font = pygame.font.SysFont('Sarpanch', 90) # font and size
@@ -194,21 +226,29 @@ while run:
     if keys[pygame.K_d]:
         bg.move_direction("right")
         med.move_direction("right")
+        if spawn_boss:
+            wizard.move_direction("right")
         for i in list_of_objects:
             i.move_direction("right")
     if keys[pygame.K_a]:
         bg.move_direction("left")
         med.move_direction("left")
+        if spawn_boss:
+            wizard.move_direction("left")
         for i in list_of_objects:
             i.move_direction("left")
     if keys[pygame.K_w]:
         bg.move_direction("up")
         med.move_direction("up")
+        if spawn_boss:
+            wizard.move_direction("up")
         for i in list_of_objects:
             i.move_direction("up")
     if keys[pygame.K_s]:
         bg.move_direction("down")
         med.move_direction("down")
+        if spawn_boss:
+            wizard.move_direction("down")
         for i in list_of_objects:
             i.move_direction("down")
 
@@ -216,12 +256,16 @@ while run:
         sprint = True
         bg.delta = 2
         med.delta = 2
+        if spawn_boss:
+            wizard.delta = 2
         for i in list_of_objects:
             i.delta = 2
     else:
         sprint = False
         bg.delta = 1
         med.delta = 1
+        if spawn_boss:
+            wizard.delta = 1
         for i in list_of_objects:
             i.delta = 1
 
