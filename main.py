@@ -33,6 +33,7 @@ inventory_full = False
 start_time = time.time()
 spawn_boss = False
 display_boss_msg = True
+reset_time = False
 
 
 # background
@@ -100,7 +101,9 @@ for i in range(6):
     print(list_of_objects)
 
 
-
+def generate_random_number(x, y):
+    randomnum = random.randint(x, y)
+    return randomnum
 
 run = True
 # -------- Main Program Loop -----------
@@ -112,11 +115,15 @@ while run:
     print(x)
 
     #time count and background switch
-    current_time = time.time()
-    current_time -= int(start_time)
-    current_time = round(current_time, 0)
-    total_time = "Time elapsed: " + str(current_time) + "s"
-    time_display = my_font.render(total_time, True, (255, 255, 255))
+    if reset_time == False:
+        current_time = time.time()
+        current_time -= int(start_time)
+        current_time = round(current_time, 0)
+        total_time = "Time elapsed: " + str(current_time) + "s"
+        time_display = my_font.render(total_time, True, (255, 255, 255))
+    else:
+        current_time = 0.0
+        reset_time = False
 
     #print(total_time)
 
@@ -132,9 +139,11 @@ while run:
     # boss
     if current_time == 2.0: #60
         spawn_boss = True
+        reset_time = True
         display_boss_msg = True
 
     if spawn_boss:
+        load_healthbar = pygame.image.load("bosshealthbar.png")
         if display_boss_msg:
             boss_display_message = my_font.render("What is that?", True, (255, 255, 255))
             my_font = pygame.font.SysFont('Sarpanch', 70)
@@ -146,8 +155,20 @@ while run:
 
         if list_of_bosses[random_index] == "Wizard":
             boss = list_of_bosses[random_index]
-            wizard = Wizard(470, 380)
-            screen.blit(wizard.image, wizard.rect)
+            wizard = Wizard(469, 388)
+          #  screen.blit(wizard.image, wizard.rect)
+            if current_time == 2.0:         #spawn fireballs
+                fireballs = generate_random_number(1, 7)
+
+                for i in range(0, fireballs):
+                    random_x = random.randint(5, 1500)
+                    random_y = random.randint(250, 1150)
+                    spawn_fireballs = Fireballs(random_x, random_y)
+                    list_of_objects.append(spawn_kit)
+                    print(list_of_objects)
+
+
+
 
 
 
@@ -227,7 +248,7 @@ while run:
         bg.move_direction("right")
         med.move_direction("right")
         if spawn_boss:
-            wizard.move_direction("right")
+            wizard.move_direction(" right")
         for i in list_of_objects:
             i.move_direction("right")
     if keys[pygame.K_a]:
@@ -265,7 +286,7 @@ while run:
         bg.delta = 1
         med.delta = 1
         if spawn_boss:
-            wizard.delta = 1
+            wizard.delta = 5
         for i in list_of_objects:
             i.delta = 1
 
@@ -275,9 +296,9 @@ while run:
 
 # display everything
     screen.blit(c.image, c.rect)
-    screen.blit(med.image, med.rect)
+    if spawn_boss:
+        screen.blit(wizard.image, wizard.rect)
 
-    screen.blit(med.image, med.rect)
     for i in list_of_objects:
         screen.blit(i.image, i.rect)
     screen.blit(display_health, (40, 600))

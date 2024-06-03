@@ -13,6 +13,7 @@ class Wizard:
     def move_direction(self, direction):
         if direction == "left":
             self.x = self.x + self.delta
+            print("easfesfs")
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
         if direction == "right":
             self.x = self.x - self.delta
