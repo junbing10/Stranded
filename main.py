@@ -6,6 +6,7 @@ from medkit import Medkit
 import math
 from Background import Background
 from Boss1 import Wizard
+from Fireballs import faireballs
 
 # set up pygame modules
 pygame.init()
@@ -34,6 +35,7 @@ start_time = time.time()
 spawn_boss = False
 display_boss_msg = True
 reset_time = False
+boss_attack = False
 
 
 # background
@@ -91,6 +93,7 @@ can_sprint = True
 
 med = Medkit(400, 400)
 list_of_objects = []
+list_of_boss_moves = []
 
 
 for i in range(6):
@@ -157,15 +160,16 @@ while run:
             boss = list_of_bosses[random_index]
             wizard = Wizard(469, 388)
           #  screen.blit(wizard.image, wizard.rect)
-            if current_time == 2.0:         #spawn fireballs
+            if current_time == 3.0:         #spawn fireballs
                 fireballs = generate_random_number(1, 7)
+                boss_attack = True
 
                 for i in range(0, fireballs):
                     random_x = random.randint(5, 1500)
                     random_y = random.randint(250, 1150)
-                    spawn_fireballs = Fireballs(random_x, random_y)
-                    list_of_objects.append(spawn_kit)
-                    print(list_of_objects)
+                    spawn_fireballs = fireballs(random_x, random_y)
+                    list_of_boss_moves.append(spawn_fireballs)
+
 
 
 
@@ -299,10 +303,16 @@ while run:
     if spawn_boss:
         screen.blit(wizard.image, wizard.rect)
 
+    if boss_attack:
+        for i in list_of_boss_moves:
+            screen.blit(i)
+
     for i in list_of_objects:
         screen.blit(i.image, i.rect)
     screen.blit(display_health, (40, 600))
     screen.blit(display_stamina, (170, 600))
+
+
 
 
 # collecting
