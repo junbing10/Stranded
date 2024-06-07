@@ -6,7 +6,7 @@ from medkit import Medkit
 import math
 from Background import Background
 from Boss1 import Wizard
-from Fireballs import faireballs
+from Fireballs import fb
 
 # set up pygame modules
 pygame.init()
@@ -36,6 +36,10 @@ spawn_boss = False
 display_boss_msg = True
 reset_time = False
 boss_attack = False
+get_rand_num = False
+fb_last_phase = 0
+fb_2nd_phase = 0
+stop_draw_fb = 0
 
 
 # background
@@ -47,6 +51,7 @@ boss_attack = False
 def draw_inventory():
     inventory_slot_print = pygame.transform.scale(inventory_slot, (200, 200))
     screen.blit(inventory_slot_print, (350, 5))
+
 
 #def draw_item_on_slot(item, x, y):
 #    slot1 = pygame.transform.scale(item, item.image_size)
@@ -92,6 +97,7 @@ can_sprint = True
 
 
 med = Medkit(400, 400)
+ball = fb(400, 400)
 list_of_objects = []
 list_of_boss_moves = []
 
@@ -101,12 +107,19 @@ for i in range(6):
     random_y = random.randint(250, 1150)
     spawn_kit = Medkit(random_x, random_y)
     list_of_objects.append(spawn_kit)
-    print(list_of_objects)
-
 
 def generate_random_number(x, y):
     randomnum = random.randint(x, y)
     return randomnum
+
+
+for i in range(0, 10):
+    random_x = random.randint(5, 1500)
+    random_y = random.randint(250, 1150)
+    spawn_fireballs = fb(random_x, random_y)
+    list_of_boss_moves.append(spawn_fireballs)
+
+
 
 run = True
 # -------- Main Program Loop -----------
@@ -115,7 +128,7 @@ while run:
 
     x = pygame.mouse.get_pos()
     display_coord = my_font.render(str(x), True, (255, 255, 255))
-    print(x)
+  #  print(x)
 
     #time count and background switch
     if reset_time == False:
@@ -161,14 +174,38 @@ while run:
             wizard = Wizard(469, 388)
           #  screen.blit(wizard.image, wizard.rect)
             if current_time == 3.0:         #spawn fireballs
-                fireballs = generate_random_number(1, 7)
                 boss_attack = True
+                get_rand_num = True
+                fb_last_phase = 6.0
+                fb_2nd_phase = 5.0
+                stop_draw_fb = 7
 
-                for i in range(0, fireballs):
-                    random_x = random.randint(5, 1500)
-                    random_y = random.randint(250, 1150)
-                    spawn_fireballs = fireballs(random_x, random_y)
-                    list_of_boss_moves.append(spawn_fireballs)
+
+            if boss_attack:
+                for i in list_of_boss_moves:
+                    screen.blit(i.image, i.rect)
+
+       #     if current_time == fb_2nd_phase and boss_attack:
+      #          for i in list_of_boss_moves:
+      #              i.image = pygame.image.load("")
+                # change the image
+
+            if  current_time == fb_2nd_phase and boss_attack:
+                for i in list_of_boss_moves:
+                    i.image = pygame.image.load("red_circle_2ndphase.png")
+
+            if current_time == fb_last_phase and boss_attack:
+                print("e")
+                for i in list_of_boss_moves:
+                    i.image = pygame.image.load("red_circle_finalphase.png")
+
+            if current_time == stop_draw_fb and boss_attack:
+                boss_attack = False
+                current_time = 0
+
+
+
+
 
 
 
@@ -206,7 +243,6 @@ while run:
     # item collecting
     for i in list_of_objects:
         if c.rect.colliderect(i.rect):
-            print("e")
             can_collect = True
             my_font = pygame.font.SysFont('Sarpanch', 35)
             display_collect_msg = my_font.render((" 'E' to collect "), True, (255, 0, 0))
@@ -253,6 +289,9 @@ while run:
         med.move_direction("right")
         if spawn_boss:
             wizard.move_direction(" right")
+        if boss_attack:
+            for i in list_of_boss_moves:
+                i.move_direction("right")
         for i in list_of_objects:
             i.move_direction("right")
     if keys[pygame.K_a]:
@@ -260,6 +299,9 @@ while run:
         med.move_direction("left")
         if spawn_boss:
             wizard.move_direction("left")
+        if boss_attack:
+            for i in list_of_boss_moves:
+                i.move_direction("left")
         for i in list_of_objects:
             i.move_direction("left")
     if keys[pygame.K_w]:
@@ -267,11 +309,17 @@ while run:
         med.move_direction("up")
         if spawn_boss:
             wizard.move_direction("up")
+        if boss_attack:
+            for i in list_of_boss_moves:
+                i.move_direction("up")
         for i in list_of_objects:
             i.move_direction("up")
     if keys[pygame.K_s]:
         bg.move_direction("down")
         med.move_direction("down")
+        if boss_attack:
+            for i in list_of_boss_moves:
+                i.move_direction("down")
         if spawn_boss:
             wizard.move_direction("down")
         for i in list_of_objects:
@@ -283,6 +331,9 @@ while run:
         med.delta = 2
         if spawn_boss:
             wizard.delta = 2
+        if boss_attack:
+            for i in list_of_boss_moves:
+                i.delta = 2
         for i in list_of_objects:
             i.delta = 2
     else:
@@ -291,6 +342,9 @@ while run:
         med.delta = 1
         if spawn_boss:
             wizard.delta = 5
+        if boss_attack:
+            for i in list_of_boss_moves:
+                i.delta = 1
         for i in list_of_objects:
             i.delta = 1
 
@@ -303,9 +357,7 @@ while run:
     if spawn_boss:
         screen.blit(wizard.image, wizard.rect)
 
-    if boss_attack:
-        for i in list_of_boss_moves:
-            screen.blit(i)
+  #  if boss_attack:
 
     for i in list_of_objects:
         screen.blit(i.image, i.rect)

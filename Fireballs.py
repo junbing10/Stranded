@@ -1,6 +1,6 @@
 import pygame
 
-class fireballs:
+class fb:
 
     def __init__(self, x, y):
         self.x = x
