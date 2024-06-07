@@ -24,6 +24,7 @@ bg_daylight = pygame.image.load("background.daylight.jpg")
 bg_midday = pygame.image.load("background_midday.jpg")
 bg_night = pygame.image.load("background_night.jpg")
 inventory_slot = pygame.image.load("inventory.png")
+load_healthbar = pygame.image.load("bosshealthbar.png")
 #character_print = pygame.image.load("character.png")
 #bg_afternoon = pygame.image.load("background.afternoon.jpg")
 #bg_night = pygame.image.load("background.night.jpg")
@@ -37,6 +38,7 @@ display_boss_msg = True
 reset_time = False
 boss_attack = False
 get_rand_num = False
+got_hit = False
 fb_last_phase = 0
 fb_2nd_phase = 0
 stop_draw_fb = 0
@@ -51,6 +53,10 @@ stop_draw_fb = 0
 def draw_inventory():
     inventory_slot_print = pygame.transform.scale(inventory_slot, (200, 200))
     screen.blit(inventory_slot_print, (350, 5))
+
+def draw_bosshp():
+    load_healthbar_print = pygame.transform.scale(load_healthbar, (500, 100))
+    screen.blit(load_healthbar_print, (188, 155))
 
 
 #def draw_item_on_slot(item, x, y):
@@ -124,22 +130,26 @@ for i in range(0, 10):
 run = True
 # -------- Main Program Loop -----------
 while run:
+    keys = pygame.key.get_pressed()  # the keys getting pressed
+    pygame.key.get_pressed()
     screen.blit(bg.image, bg.rect)
 
     x = pygame.mouse.get_pos()
     display_coord = my_font.render(str(x), True, (255, 255, 255))
-  #  print(x)
+    print(x)
 
     #time count and background switch
     if reset_time == False:
         current_time = time.time()
         current_time -= int(start_time)
-        current_time = round(current_time, 0)
+        current_time = round(current_time, 2)
         total_time = "Time elapsed: " + str(current_time) + "s"
         time_display = my_font.render(total_time, True, (255, 255, 255))
     else:
         current_time = 0.0
         reset_time = False
+
+
 
     #print(total_time)
 
@@ -159,6 +169,7 @@ while run:
         display_boss_msg = True
 
     if spawn_boss:
+        draw_bosshp()
         load_healthbar = pygame.image.load("bosshealthbar.png")
         if display_boss_msg:
             boss_display_message = my_font.render("What is that?", True, (255, 255, 255))
@@ -178,7 +189,7 @@ while run:
                 get_rand_num = True
                 fb_last_phase = 6.0
                 fb_2nd_phase = 5.0
-                stop_draw_fb = 7
+                stop_draw_fb = 6.3
 
 
             if boss_attack:
@@ -195,9 +206,13 @@ while run:
                     i.image = pygame.image.load("red_circle_2ndphase.png")
 
             if current_time == fb_last_phase and boss_attack:
-                print("e")
                 for i in list_of_boss_moves:
                     i.image = pygame.image.load("red_circle_finalphase.png")
+                    if c.rect.colliderect(i.rect):
+                        c_health = c_health - 10
+                        my_font = pygame.font.SysFont('Sarpanch', 90)
+                        display_health = my_font.render((str(c_health)), True, (255, 255, 255))
+
 
             if current_time == stop_draw_fb and boss_attack:
                 boss_attack = False
@@ -237,8 +252,8 @@ while run:
         display_stamina = my_font.render(str(c_stamina), True, (255, 25, 255))
 
 
-    keys = pygame.key.get_pressed()             # the keys getting pressed
-    pygame.key.get_pressed()
+ #   keys = pygame.key.get_pressed()             # the keys getting pressed
+ #   pygame.key.get_pressed()
 
     # item collecting
     for i in list_of_objects:
