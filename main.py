@@ -8,6 +8,7 @@ from Background import Background
 from Boss1 import Wizard
 from Fireballs import fb
 
+
 # set up pygame modules
 pygame.init()
 pygame.font.init()
@@ -25,9 +26,6 @@ bg_midday = pygame.image.load("background_midday.jpg")
 bg_night = pygame.image.load("background_night.jpg")
 inventory_slot = pygame.image.load("inventory.png")
 load_healthbar = pygame.image.load("bosshealthbar.png")
-#character_print = pygame.image.load("character.png")
-#bg_afternoon = pygame.image.load("background.afternoon.jpg")
-#bg_night = pygame.image.load("background.night.jpg")
 
 # varaibles
 can_collect = False
@@ -42,6 +40,11 @@ got_hit = False
 fb_last_phase = 0
 fb_2nd_phase = 0
 stop_draw_fb = 0
+
+idle1 = True
+idle2 = False
+idle3 = False
+idle4 = False
 
 
 # background
@@ -58,14 +61,33 @@ def draw_bosshp():
     load_healthbar_print = pygame.transform.scale(load_healthbar, (500, 100))
     screen.blit(load_healthbar_print, (188, 155))
 
+def draw_item_on_slot(item):
+    if len(inventory) == 1:
+        item.x = 468
+        item.y = 80
+        screen.blit(item.image, item.rect)
 
-#def draw_item_on_slot(item, x, y):
-#    slot1 = pygame.transform.scale(item, item.image_size)
-#    screen.blit(slot1, x, y)
+  #      slot = pygame.transform.scale(item, item.image_size)
+  #      screen.blit(slot, (490, 80))
+    if len(inventory) == 2:
+        item.x = 510
+        item.y = 80
+        screen.blit(item.image, item.rect)
 
+    #    slot = pygame.transform.scale(item, item.image_size)
+    #    screen.blit(slot, (510, 80))
+    if len(inventory) == 3:
+        item.x = 520
+        item.y = 80
+        screen.blit(item.image, item.rect)
 
-#def draw_item_in_slots():
+    if len(inventory) == 4:
+        item.x = 540
+        item.y = 80
+        screen.blit(item.image, item.rect)
 
+      #  slot = pygame.transform.scale(item, item.image_size)
+     #   screen.blit(slot, (520, 80))
 
 # characters and items
 c = Character(443, 353)
@@ -125,45 +147,58 @@ for i in range(0, 10):
     spawn_fireballs = fb(random_x, random_y)
     list_of_boss_moves.append(spawn_fireballs)
 
-
-
 run = True
+
+clock = pygame.time.Clock()
+frame = 0
 # -------- Main Program Loop -----------
 while run:
+    clock.tick(60)
+    print(frame)
+    if frame % 30 == 0:
+        c.switch_image(1)
+    if got_hit:
+        c.switch_image(4)
+   # if frame % 30 == 0:
+  #      c.switch_image(1)
+  # if frame % 50 == 0:
+   #     c.switch_image(2)
+
     keys = pygame.key.get_pressed()  # the keys getting pressed
     pygame.key.get_pressed()
     screen.blit(bg.image, bg.rect)
 
     x = pygame.mouse.get_pos()
     display_coord = my_font.render(str(x), True, (255, 255, 255))
-    print(x)
+    #print(x)
 
     #time count and background switch
-    if reset_time == False:
+ #   if reset_time == False:
+     #   print(time.time())
+    current_time = time.time()
+    current_time -= int(start_time)
+    current_time = round(current_time, 2)
+    total_time = "Time elapsed: " + str(current_time) + "s"
+    time_display = my_font.render(total_time, True, (255, 255, 255))
+    #elif reset_time:
+    if reset_time:
         current_time = time.time()
-        current_time -= int(start_time)
-        current_time = round(current_time, 2)
-        total_time = "Time elapsed: " + str(current_time) + "s"
-        time_display = my_font.render(total_time, True, (255, 255, 255))
-    else:
-        current_time = 0.0
         reset_time = False
 
 
-
-    #print(total_time)
+  #  print(total_time)
 
     #background switch
 
-    if current_time == 25.0:
+    if current_time == 7.0:
         bg.image = pygame.image.load("background_midday.jpg")
 
 
-    if current_time == 45.0:            # 45
+    if current_time == 15.0:            # 45
         bg.image = pygame.image.load("background_night.jpg")
 
     # boss
-    if current_time == 2.0: #60
+    if current_time == 2.0 and not spawn_boss: #60
         spawn_boss = True
         reset_time = True
         display_boss_msg = True
@@ -177,7 +212,6 @@ while run:
             screen.blit(boss_display_message, (521, 368))
             if current_time == 4.0:
                 display_boss_msg = False
-
         random_index = 0
 
         if list_of_bosses[random_index] == "Wizard":
@@ -187,19 +221,13 @@ while run:
             if current_time == 3.0:         #spawn fireballs
                 boss_attack = True
                 get_rand_num = True
-                fb_last_phase = 6.0
-                fb_2nd_phase = 5.0
-                stop_draw_fb = 6.3
-
+                fb_last_phase = 5.0
+                fb_2nd_phase = 4.8
+                stop_draw_fb = 5.3
 
             if boss_attack:
                 for i in list_of_boss_moves:
                     screen.blit(i.image, i.rect)
-
-       #     if current_time == fb_2nd_phase and boss_attack:
-      #          for i in list_of_boss_moves:
-      #              i.image = pygame.image.load("")
-                # change the image
 
             if  current_time == fb_2nd_phase and boss_attack:
                 for i in list_of_boss_moves:
@@ -209,25 +237,15 @@ while run:
                 for i in list_of_boss_moves:
                     i.image = pygame.image.load("red_circle_finalphase.png")
                     if c.rect.colliderect(i.rect):
+                        got_hit = True
                         c_health = c_health - 10
                         my_font = pygame.font.SysFont('Sarpanch', 90)
                         display_health = my_font.render((str(c_health)), True, (255, 255, 255))
 
-
             if current_time == stop_draw_fb and boss_attack:
                 boss_attack = False
-                current_time = 0
-
-
-
-
-
-
-
-
-
-
-
+                current_time = time.time()
+                print(current_time)
 
 
 
@@ -252,8 +270,6 @@ while run:
         display_stamina = my_font.render(str(c_stamina), True, (255, 25, 255))
 
 
- #   keys = pygame.key.get_pressed()             # the keys getting pressed
- #   pygame.key.get_pressed()
 
     # item collecting
     for i in list_of_objects:
@@ -264,7 +280,6 @@ while run:
         else:
             can_collect = False
 
-
         if can_collect == True and keys[pygame.K_e]:        # collecting item
             if len(inventory) == 4:
                 inventory_full = True
@@ -272,24 +287,9 @@ while run:
             else:
                 collect_item(i)
                 list_of_objects.remove(i)
-         #       draw_item_on_slot(i, 468, 80)
+                draw_item_on_slot(i)
                 print(inventory)
 
- #               for i in range(5):
-#                    amount_of_items = i
-##                    if len(inventory) == i:
-  #                      screen.blit()
-
-                if len(inventory) == 0:
-                    inventory_slot_numbers = 0
-                if len(inventory) == 1:
-                    inventory_slot_numbers = 1
-                if len(inventory) == 2:
-                    inventory_slot_numbers = 2
-                if len(inventory) == 3:
-                    inventory_slot_numbers = 3
-                if len(inventory) == 4:
-                    inventory_slot_numbers = 4
 
 
         # med kit heal
@@ -378,8 +378,6 @@ while run:
         screen.blit(i.image, i.rect)
     screen.blit(display_health, (40, 600))
     screen.blit(display_stamina, (170, 600))
-
-
 
 
 # collecting
