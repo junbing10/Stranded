@@ -37,6 +37,10 @@ reset_time = False
 boss_attack = False
 get_rand_num = False
 got_hit = False
+blit_slot1 = False
+blit_slot2 = False
+blit_slot3 = False
+blit_slot4 = False
 fb_last_phase = 0
 fb_2nd_phase = 0
 stop_draw_fb = 0
@@ -49,10 +53,6 @@ idle4 = False
 
 # background
 
-#def draw_character():
-#    character_display = pygame.transform.scale(character_print, (40, 80))
-#    screen.blit(character_display, (400, 320))
-
 def draw_inventory():
     inventory_slot_print = pygame.transform.scale(inventory_slot, (200, 200))
     screen.blit(inventory_slot_print, (350, 5))
@@ -62,18 +62,19 @@ def draw_bosshp():
     screen.blit(load_healthbar_print, (188, 155))
 
 def draw_item_on_slot(item):
+    print("drawing")
     if len(inventory) == 1:
-        item.x = 468
-        item.y = 80
-        screen.blit(item.image, item.rect)
-
+        print(len(inventory))
+        item.x = 428
+        item.y = 123
+        blit_slot1 = True
+        print("yes")
   #      slot = pygame.transform.scale(item, item.image_size)
   #      screen.blit(slot, (490, 80))
     if len(inventory) == 2:
         item.x = 510
         item.y = 80
         screen.blit(item.image, item.rect)
-
     #    slot = pygame.transform.scale(item, item.image_size)
     #    screen.blit(slot, (510, 80))
     if len(inventory) == 3:
@@ -154,11 +155,12 @@ frame = 0
 # -------- Main Program Loop -----------
 while run:
     clock.tick(60)
-    print(frame)
+  #  print(frame)
     if frame % 30 == 0:
         c.switch_image(1)
     if got_hit:
         c.switch_image(4)
+
    # if frame % 30 == 0:
   #      c.switch_image(1)
   # if frame % 50 == 0:
@@ -170,7 +172,7 @@ while run:
 
     x = pygame.mouse.get_pos()
     display_coord = my_font.render(str(x), True, (255, 255, 255))
-    #print(x)
+    print(x)
 
     #time count and background switch
  #   if reset_time == False:
@@ -236,6 +238,7 @@ while run:
             if current_time == fb_last_phase and boss_attack:
                 for i in list_of_boss_moves:
                     i.image = pygame.image.load("red_circle_finalphase.png")
+                    got_hit = False
                     if c.rect.colliderect(i.rect):
                         got_hit = True
                         c_health = c_health - 10
@@ -269,8 +272,6 @@ while run:
         math.trunc(c_stamina)
         display_stamina = my_font.render(str(c_stamina), True, (255, 25, 255))
 
-
-
     # item collecting
     for i in list_of_objects:
         if c.rect.colliderect(i.rect):
@@ -287,10 +288,40 @@ while run:
             else:
                 collect_item(i)
                 list_of_objects.remove(i)
-                draw_item_on_slot(i)
-                print(inventory)
+                if len(inventory) == 1:
+                    for item in inventory:
+                        item.x = 429
+                        item.y = 85
+                        blit_slot1 = True
+                if len(inventory) == 2:
+                    for item in inventory:
+                        item.x = 429
+                        item.y = 85
+                        blit_slot2 = True
+                if len(inventory) == 3:
+                    for item in inventory:
+                        item.x = 429
+                        item.y = 85
+                        blit_slot3 = True
+                if len(inventory) == 4:
+                    for item in inventory:
+                        item.x = 429
+                        item.y = 85
+                        blit_slot4 = True
 
 
+
+
+    if blit_slot1:
+        screen.blit(inventory[0].image, inventory[0].rect)
+    if blit_slot2:
+        screen.blit(inventory[1].image, inventory[1].rect)
+    if blit_slot3:
+        screen.blit(inventory[2].image, inventory[2].rect)
+    if blit_slot4:
+        screen.blit(inventory[3].image, inventory[3].rect)
+
+ #   print(list_of_objects)
 
         # med kit heal
 
@@ -372,6 +403,7 @@ while run:
     if spawn_boss:
         screen.blit(wizard.image, wizard.rect)
 
+
   #  if boss_attack:
 
     for i in list_of_objects:
@@ -382,7 +414,6 @@ while run:
 
 # collecting
     if can_collect:
-        print("t")
         if inventory_full:
            screen.blit(display_inv_full, (400, 600))
         else:
