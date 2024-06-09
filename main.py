@@ -155,7 +155,7 @@ frame = 0
 # -------- Main Program Loop -----------
 while run:
     clock.tick(60)
-  #  print(frame)
+    print(frame)
     if frame % 30 == 0:
         c.switch_image(1)
     if got_hit:
@@ -184,7 +184,7 @@ while run:
     time_display = my_font.render(total_time, True, (255, 255, 255))
     #elif reset_time:
     if reset_time:
-        current_time = time.time()
+        current_time = 0
         reset_time = False
 
 
@@ -247,7 +247,7 @@ while run:
 
             if current_time == stop_draw_fb and boss_attack:
                 boss_attack = False
-                current_time = time.time()
+                reset_time = True
                 print(current_time)
 
 
@@ -295,17 +295,17 @@ while run:
                         blit_slot1 = True
                 if len(inventory) == 2:
                     for item in inventory:
-                        item.x = 429
+                        item.x = 459
                         item.y = 85
                         blit_slot2 = True
                 if len(inventory) == 3:
                     for item in inventory:
-                        item.x = 429
+                        item.x = 493
                         item.y = 85
                         blit_slot3 = True
                 if len(inventory) == 4:
                     for item in inventory:
-                        item.x = 429
+                        item.x = 525
                         item.y = 85
                         blit_slot4 = True
 
