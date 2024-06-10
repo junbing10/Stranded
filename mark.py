@@ -8,7 +8,7 @@ class QMark:
         self.image_list = ["question mark up.png", "question mark down.png"]
         self.image = pygame.image.load("question mark up.png")
         self.image_size = self.image.get_size()
-        self.lottery_num =
+        self.lottery_num = "#"
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
         self.delta = 1
 

@@ -13,9 +13,13 @@ class Character:
        self.image_size = self.image.get_size()
        self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
        self.delta = 1
+       self.current_image = 0
 
    def switch_image(self, image_number):
-       self.image = pygame.image.load(self.image_list[image_number])
+       self.current_image += 1
+       if self.current_image == 4:
+           self.current_image = 0
+       self.image = pygame.image.load(self.image_list[self.current_image])
 #        self.rescale_image(self.image)
        self.image_size = self.image.get_size()
 

@@ -24,6 +24,10 @@ class Medkit:
             self.y = self.y - self.delta
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
 
+    def move_item(self, x, y):
+        self.x = x
+        self.y = y
+        self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
 
 #   def use_heal(self):
  #       c_health = c_health + 20

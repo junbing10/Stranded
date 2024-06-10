@@ -26,7 +26,6 @@ bg_daylight = pygame.image.load("background.daylight.jpg")
 bg_midday = pygame.image.load("background_midday.jpg")
 bg_night = pygame.image.load("background_night.jpg")
 inventory_slot = pygame.image.load("inventory.png")
-load_healthbar = pygame.image.load("bosshealthbar.png")
 
 # varaibles
 can_collect = False
@@ -59,10 +58,6 @@ idle4 = False
 def draw_inventory():
     inventory_slot_print = pygame.transform.scale(inventory_slot, (200, 200))
     screen.blit(inventory_slot_print, (350, 5))
-
-def draw_bosshp():
-    load_healthbar_print = pygame.transform.scale(load_healthbar, (500, 100))
-    screen.blit(load_healthbar_print, (188, 155))
 
 def draw_item_on_slot(item):
     print("drawing")
@@ -178,7 +173,7 @@ while run:
    # print(game_win)
     clock.tick(60)
    # print(frame)
-    if frame % 30 == 0:
+    if frame % 25 == 0:
         c.switch_image(1)
     if got_hit:
         c.switch_image(4)
@@ -206,7 +201,7 @@ while run:
     time_display = my_font.render(total_time, True, (255, 255, 255))
     #elif reset_time:
     if reset_time:
-        current_time = 0
+        start_time = time.time()
         reset_time = False
 
 
@@ -228,8 +223,6 @@ while run:
         display_boss_msg = True
 
     if spawn_boss:
-        draw_bosshp()
-        load_healthbar = pygame.image.load("bosshealthbar.png")
         if display_boss_msg:
             boss_display_message = my_font.render("What is that?", True, (255, 255, 255))
             my_font = pygame.font.SysFont('Sarpanch', 70)
@@ -315,23 +308,19 @@ while run:
                 list_of_objects.remove(i)
                 if len(inventory) == 1:
                     for item in inventory:
-                        item.x = 429
-                        item.y = 85
+                        item.move_item(429, 85)
                         blit_slot1 = True
                 if len(inventory) == 2:
                     for item in inventory:
-                        item.x = 459
-                        item.y = 85
+                        item.move_item(459, 85)
                         blit_slot2 = True
                 if len(inventory) == 3:
                     for item in inventory:
-                        item.x = 493
-                        item.y = 85
+                        item.move_item(493, 85)
                         blit_slot3 = True
                 if len(inventory) == 4:
                     for item in inventory:
-                        item.x = 525
-                        item.y = 85
+                        item.move_item(525, 85)
                         blit_slot4 = True
 
     for x in list_of_qmarks:
@@ -358,9 +347,9 @@ while run:
     if blit_slot4:
         screen.blit(inventory[3].image, inventory[3].rect)
 
- #   print(list_of_objects)
 
         # med kit heal
+
 
 
     keys = pygame.key.get_pressed()  # the keys getting pressed
@@ -478,6 +467,6 @@ while run:
     my_font = pygame.font.SysFont('Sarpanch', 20)
  #   screen.blit(display_coord, x)
 
-
+    frame += 1
     pygame.display.update()
 
