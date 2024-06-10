@@ -7,6 +7,7 @@ import math
 from Background import Background
 from Boss1 import Wizard
 from Fireballs import fb
+from mark import QMark
 
 
 # set up pygame modules
@@ -41,6 +42,8 @@ blit_slot1 = False
 blit_slot2 = False
 blit_slot3 = False
 blit_slot4 = False
+game_win = False
+mark_count = 0
 fb_last_phase = 0
 fb_2nd_phase = 0
 stop_draw_fb = 0
@@ -126,27 +129,45 @@ can_sprint = True
 
 
 med = Medkit(400, 400)
+qm = QMark(-500, -500)
 ball = fb(400, 400)
 list_of_objects = []
 list_of_boss_moves = []
+list_of_qmarks = []
 
 
 for i in range(6):
-    random_x = random.randint(5, 1500)
+    random_x = random.randint(5, 1400)
     random_y = random.randint(250, 1150)
     spawn_kit = Medkit(random_x, random_y)
     list_of_objects.append(spawn_kit)
 
-def generate_random_number(x, y):
-    randomnum = random.randint(x, y)
-    return randomnum
-
 
 for i in range(0, 10):
-    random_x = random.randint(5, 1500)
+    random_x = random.randint(5, 1400)
     random_y = random.randint(250, 1150)
     spawn_fireballs = fb(random_x, random_y)
     list_of_boss_moves.append(spawn_fireballs)
+
+generate_rand_num = random.randint(0, 10)
+list_of_jackpot = ["#", "#", "#", "#", "#", "#", "#", "#", "#"]
+list_of_jackpot.insert(generate_rand_num, "!")
+print(list_of_jackpot)
+
+for i in range (0, 10):
+    random_x = random.randint(5, 1400)
+    random_y = random.randint(250, 1150)
+    spawn_questionmark = QMark(random_x, random_y)
+    list_of_qmarks.append(spawn_questionmark)
+
+for i in list_of_qmarks:
+    for x in list_of_jackpot:
+        i.lottery_num = x
+
+
+
+
+
 
 run = True
 
@@ -154,8 +175,9 @@ clock = pygame.time.Clock()
 frame = 0
 # -------- Main Program Loop -----------
 while run:
+   # print(game_win)
     clock.tick(60)
-    print(frame)
+   # print(frame)
     if frame % 30 == 0:
         c.switch_image(1)
     if got_hit:
@@ -172,7 +194,7 @@ while run:
 
     x = pygame.mouse.get_pos()
     display_coord = my_font.render(str(x), True, (255, 255, 255))
-    print(x)
+  #  print(x)
 
     #time count and background switch
  #   if reset_time == False:
@@ -192,12 +214,12 @@ while run:
 
     #background switch
 
-    if current_time == 7.0:
-        bg.image = pygame.image.load("background_midday.jpg")
+  #  if current_time == 7.0:
+ #       bg.image = pygame.image.load("background_midday.jpg")
 
 
-    if current_time == 15.0:            # 45
-        bg.image = pygame.image.load("background_night.jpg")
+   # if current_time == 15.0:            # 45
+   #     bg.image = pygame.image.load("background_night.jpg")
 
     # boss
     if current_time == 2.0 and not spawn_boss: #60
@@ -274,6 +296,8 @@ while run:
 
     # item collecting
     for i in list_of_objects:
+
+
         if c.rect.colliderect(i.rect):
             can_collect = True
             my_font = pygame.font.SysFont('Sarpanch', 35)
@@ -281,7 +305,8 @@ while run:
         else:
             can_collect = False
 
-        if can_collect == True and keys[pygame.K_e]:        # collecting item
+        keys = pygame.key.get_pressed()
+        if can_collect and keys[pygame.K_e]:  # collecting item
             if len(inventory) == 4:
                 inventory_full = True
                 print("inventory full")
@@ -309,6 +334,18 @@ while run:
                         item.y = 85
                         blit_slot4 = True
 
+    for x in list_of_qmarks:
+
+        if c.rect.colliderect(x.rect):
+            print(x.lottery_num)
+            if x.lottery_num == "!":
+                print("e")
+                game_win = True
+
+            mark_count = mark_count + 1
+
+            list_of_qmarks.remove(x)
+
 
 
 
@@ -333,6 +370,8 @@ while run:
     if keys[pygame.K_d]:
         bg.move_direction("right")
         med.move_direction("right")
+        for i in list_of_qmarks:
+            i.move_direction("right")
         if spawn_boss:
             wizard.move_direction(" right")
         if boss_attack:
@@ -343,6 +382,8 @@ while run:
     if keys[pygame.K_a]:
         bg.move_direction("left")
         med.move_direction("left")
+        for i in list_of_qmarks:
+            i.move_direction("left")
         if spawn_boss:
             wizard.move_direction("left")
         if boss_attack:
@@ -353,6 +394,8 @@ while run:
     if keys[pygame.K_w]:
         bg.move_direction("up")
         med.move_direction("up")
+        for i in list_of_qmarks:
+            i.move_direction("up")
         if spawn_boss:
             wizard.move_direction("up")
         if boss_attack:
@@ -363,6 +406,8 @@ while run:
     if keys[pygame.K_s]:
         bg.move_direction("down")
         med.move_direction("down")
+        for i in list_of_qmarks:
+            i.move_direction("down")
         if boss_attack:
             for i in list_of_boss_moves:
                 i.move_direction("down")
@@ -375,6 +420,8 @@ while run:
         sprint = True
         bg.delta = 2
         med.delta = 2
+        for t in list_of_qmarks:
+            t.delta = 2
         if spawn_boss:
             wizard.delta = 2
         if boss_attack:
@@ -386,6 +433,8 @@ while run:
         sprint = False
         bg.delta = 1
         med.delta = 1
+        for t in list_of_qmarks:
+            t.delta = 1
         if spawn_boss:
             wizard.delta = 5
         if boss_attack:
@@ -410,6 +459,13 @@ while run:
         screen.blit(i.image, i.rect)
     screen.blit(display_health, (40, 600))
     screen.blit(display_stamina, (170, 600))
+
+    for t in list_of_qmarks:
+        screen.blit(t.image, t.rect)
+
+    my_font = pygame.font.SysFont('Sarpanch', 80)
+    display_mark_count = my_font.render((str(mark_count) + "/10 "), True, (255, 255, 255))
+    screen.blit(display_mark_count, (755, 136))
 
 
 # collecting
