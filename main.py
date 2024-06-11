@@ -42,6 +42,7 @@ blit_slot2 = False
 blit_slot3 = False
 blit_slot4 = False
 game_win = False
+highlight_image = False
 mark_count = 0
 fb_last_phase = 0
 fb_2nd_phase = 0
@@ -52,41 +53,19 @@ idle2 = False
 idle3 = False
 idle4 = False
 
+at_slot1 = False
+at_slot2 = False
+at_slot3 = False
+at_slot4 = False
+
+
 
 # background
 
 def draw_inventory():
     inventory_slot_print = pygame.transform.scale(inventory_slot, (200, 200))
-    screen.blit(inventory_slot_print, (350, 5))
+    screen.blit(inventory_slot_print, (350, 576))
 
-def draw_item_on_slot(item):
-    print("drawing")
-    if len(inventory) == 1:
-        print(len(inventory))
-        item.x = 428
-        item.y = 123
-        blit_slot1 = True
-        print("yes")
-  #      slot = pygame.transform.scale(item, item.image_size)
-  #      screen.blit(slot, (490, 80))
-    if len(inventory) == 2:
-        item.x = 510
-        item.y = 80
-        screen.blit(item.image, item.rect)
-    #    slot = pygame.transform.scale(item, item.image_size)
-    #    screen.blit(slot, (510, 80))
-    if len(inventory) == 3:
-        item.x = 520
-        item.y = 80
-        screen.blit(item.image, item.rect)
-
-    if len(inventory) == 4:
-        item.x = 540
-        item.y = 80
-        screen.blit(item.image, item.rect)
-
-      #  slot = pygame.transform.scale(item, item.image_size)
-     #   screen.blit(slot, (520, 80))
 
 # characters and items
 c = Character(443, 353)
@@ -138,7 +117,7 @@ for i in range(6):
     list_of_objects.append(spawn_kit)
 
 
-for i in range(0, 10):
+for i in range(0, 15):
     random_x = random.randint(5, 1400)
     random_y = random.randint(250, 1150)
     spawn_fireballs = fb(random_x, random_y)
@@ -159,24 +138,42 @@ for i in list_of_qmarks:
     for x in list_of_jackpot:
         i.lottery_num = x
 
-
-
-
-
-
 run = True
+
+idle = True
+walk = False
+
 
 clock = pygame.time.Clock()
 frame = 0
 # -------- Main Program Loop -----------
 while run:
+    keys = pygame.key.get_pressed()  # the keys getting pressed
+    pygame.key.get_pressed()
+
+    if keys[pygame.K_w] or keys[pygame.K_a] or keys[pygame.K_s] or keys[pygame.K_d] and not sprint:
+        walk = True
+        idle = False
+    else:
+        idle = True
+        walk = False
+
+
    # print(game_win)
     clock.tick(60)
-   # print(frame)
-    if frame % 25 == 0:
+    if frame % 25 == 0 and idle:
         c.switch_image(1)
+    if sprint and frame % 5 == 0:
+        print("running")
+        idle = False
+        walk = False
+        c.switch_image_run(1)
+    if walk and frame % 10 == 0 :
+        c.switch_image_walk(1)
     if got_hit:
         c.switch_image(4)
+
+    print(idle)
 
    # if frame % 30 == 0:
   #      c.switch_image(1)
@@ -189,7 +186,7 @@ while run:
 
     x = pygame.mouse.get_pos()
     display_coord = my_font.render(str(x), True, (255, 255, 255))
-  #  print(x)
+    #print(x)
 
     #time count and background switch
  #   if reset_time == False:
@@ -203,18 +200,6 @@ while run:
     if reset_time:
         start_time = time.time()
         reset_time = False
-
-
-  #  print(total_time)
-
-    #background switch
-
-  #  if current_time == 7.0:
- #       bg.image = pygame.image.load("background_midday.jpg")
-
-
-   # if current_time == 15.0:            # 45
-   #     bg.image = pygame.image.load("background_night.jpg")
 
     # boss
     if current_time == 2.0 and not spawn_boss: #60
@@ -270,8 +255,6 @@ while run:
     my_font = pygame.font.SysFont('Sarpanch', 90) # font and size
 
 
-    draw_inventory()
-
 
     # stamina change
     if c_stamina > 0:
@@ -279,13 +262,17 @@ while run:
     if c_stamina <= 0:
         can_sprint = False
     if sprint == False and c_stamina < 100:
-        c_stamina = c_stamina + .05
-        math.trunc(c_stamina)
-        display_stamina = my_font.render(str(c_stamina), True, (255, 25, 255))
+        c_stamina = c_stamina + .3
+        rounded = round(c_stamina, 0)
+       # math.trunc(c_stamina)
+        display_stamina = my_font.render(str(rounded), True, (255, 25, 255))
     if sprint:
-        c_stamina = c_stamina - .1
-        math.trunc(c_stamina)
-        display_stamina = my_font.render(str(c_stamina), True, (255, 25, 255))
+        c_stamina = c_stamina - .5
+        rounded = round(c_stamina, 0)
+      #  math.trunc(c_stamina)
+        display_stamina = my_font.render(str(rounded), True, (255, 25, 255))
+    else:
+        idle = True
 
     # item collecting
     for i in list_of_objects:
@@ -307,21 +294,17 @@ while run:
                 collect_item(i)
                 list_of_objects.remove(i)
                 if len(inventory) == 1:
-                    for item in inventory:
-                        item.move_item(429, 85)
-                        blit_slot1 = True
+                    inventory[0].move_item(353, 602)
+                    blit_slot1 = True
                 if len(inventory) == 2:
-                    for item in inventory:
-                        item.move_item(459, 85)
-                        blit_slot2 = True
+                    inventory[1].move_item(400, 602)
+                    blit_slot2 = True
                 if len(inventory) == 3:
-                    for item in inventory:
-                        item.move_item(493, 85)
-                        blit_slot3 = True
+                    inventory[2].move_item(447, 602)
+                    blit_slot3 = True
                 if len(inventory) == 4:
-                    for item in inventory:
-                        item.move_item(525, 85)
-                        blit_slot4 = True
+                    inventory[3].move_item(500, 602)
+                    blit_slot4 = True
 
     for x in list_of_qmarks:
 
@@ -335,9 +318,6 @@ while run:
 
             list_of_qmarks.remove(x)
 
-
-
-
     if blit_slot1:
         screen.blit(inventory[0].image, inventory[0].rect)
     if blit_slot2:
@@ -347,13 +327,32 @@ while run:
     if blit_slot4:
         screen.blit(inventory[3].image, inventory[3].rect)
 
-
         # med kit heal
-
-
-
     keys = pygame.key.get_pressed()  # the keys getting pressed
     pygame.key.get_pressed()
+
+    if keys[pygame.K_1]:
+        highlight_image = True
+        at_slot1 = True
+        highlight_x = 358
+        highlight_y = 592
+    if keys[pygame.K_2]:
+        highlight_image = True
+        highlight_x = 410
+        highlight_y = 592
+    if keys[pygame.K_3]:
+        highlight_image = True
+        highlight_x = 458
+        highlight_y = 592
+    if keys[pygame.K_4]:
+        highlight_image = True
+        highlight_x = 508
+        highlight_y = 592
+    if highlight_image:
+        highlight_inv = pygame.image.load("slot highlight.png")
+        screen.blit(highlight_inv, (highlight_x, highlight_y))
+
+
 
     # movement
     if keys[pygame.K_d]:
@@ -466,6 +465,8 @@ while run:
             screen.blit(display_collect_msg, (400, 600))
     my_font = pygame.font.SysFont('Sarpanch', 20)
  #   screen.blit(display_coord, x)
+
+    draw_inventory()
 
     frame += 1
     pygame.display.update()
