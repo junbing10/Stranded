@@ -22,7 +22,7 @@ SCREEN_HEIGHT = 700
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Stranded")
-bg_daylight = pygame.image.load("background.daylight.jpg")
+bg_daylight = pygame.image.load("background.png")
 bg_midday = pygame.image.load("background_midday.jpg")
 bg_night = pygame.image.load("background_night.jpg")
 inventory_slot = pygame.image.load("inventory.png")
@@ -274,6 +274,8 @@ while run:
     else:
         idle = True
 
+    draw_inventory()
+
     # item collecting
     for i in list_of_objects:
 
@@ -351,6 +353,10 @@ while run:
     if highlight_image:
         highlight_inv = pygame.image.load("slot highlight.png")
         screen.blit(highlight_inv, (highlight_x, highlight_y))
+
+
+
+#    if keys
 
 
 
@@ -465,8 +471,6 @@ while run:
             screen.blit(display_collect_msg, (400, 600))
     my_font = pygame.font.SysFont('Sarpanch', 20)
  #   screen.blit(display_coord, x)
-
-    draw_inventory()
 
     frame += 1
     pygame.display.update()
