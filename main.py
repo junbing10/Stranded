@@ -23,9 +23,8 @@ SCREEN_HEIGHT = 700
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Stranded")
 bg_daylight = pygame.image.load("background.png")
-bg_midday = pygame.image.load("background_midday.jpg")
-bg_night = pygame.image.load("background_night.jpg")
 inventory_slot = pygame.image.load("inventory.png")
+no_flashlight = pygame.image.load("darkness.webp")
 
 # varaibles
 can_collect = False
@@ -66,9 +65,18 @@ def draw_inventory():
     inventory_slot_print = pygame.transform.scale(inventory_slot, (200, 200))
     screen.blit(inventory_slot_print, (350, 576))
 
+def draw_darkness():
+    darkness_print = pygame.transform.scale(no_flashlight, (900, 700))
+    screen.blit(darkness_print, (0, 0))
+
+
+
+
+
+
 
 # characters and items
-c = Character(443, 353)
+c = Character(452, 287)
 bg = Background(-500, -450)
 
 #bosses
@@ -148,6 +156,7 @@ clock = pygame.time.Clock()
 frame = 0
 # -------- Main Program Loop -----------
 while run:
+
     keys = pygame.key.get_pressed()  # the keys getting pressed
     pygame.key.get_pressed()
 
@@ -184,9 +193,10 @@ while run:
     pygame.key.get_pressed()
     screen.blit(bg.image, bg.rect)
 
+
     x = pygame.mouse.get_pos()
     display_coord = my_font.render(str(x), True, (255, 255, 255))
-    #print(x)
+    print(x)
 
     #time count and background switch
  #   if reset_time == False:
@@ -274,7 +284,6 @@ while run:
     else:
         idle = True
 
-    draw_inventory()
 
     # item collecting
     for i in list_of_objects:
@@ -451,8 +460,6 @@ while run:
 
     for i in list_of_objects:
         screen.blit(i.image, i.rect)
-    screen.blit(display_health, (40, 600))
-    screen.blit(display_stamina, (170, 600))
 
     for t in list_of_qmarks:
         screen.blit(t.image, t.rect)
@@ -473,5 +480,9 @@ while run:
  #   screen.blit(display_coord, x)
 
     frame += 1
+    draw_darkness()
+    draw_inventory()
+    screen.blit(display_health, (40, 600))
+    screen.blit(display_stamina, (170, 600))
     pygame.display.update()
 
